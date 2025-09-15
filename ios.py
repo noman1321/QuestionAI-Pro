@@ -1282,7 +1282,9 @@ from reportlab.lib import colors
 from PIL import Image
 import io
 import base64
+from question_generator import get_client
 
+client = get_client()
 # Enhanced CSS for Glass Black theme with animations
 def load_css():
     st.markdown("""
@@ -2966,4 +2968,5 @@ def main():
             st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
+
     main()
