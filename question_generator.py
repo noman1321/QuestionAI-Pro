@@ -14,17 +14,31 @@ from dotenv import load_dotenv
 import time
 import re
 from image_processor import ImageProcessor
+from openai import OpenAI
 
-# Load environment variables
+# Load local .env if available
 load_dotenv()
 
 def get_openai_api_key():
-    """Get OpenAI API key from multiple sources"""
-    try:
-        return st.secrets["OPENAI_API_KEY"]
-    except:
-        pass
-    return os.getenv('OPENAI_API_KEY')
+    # First check Streamlit secrets, then .env
+    return st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+
+def get_client():
+    api_key = get_openai_api_key()
+    if not api_key:
+        raise ValueError("OpenAI API key not found. Please set it in Streamlit Secrets or .env")
+    return OpenAI(api_key=api_key)
+
+# Load environment variables
+# load_dotenv()
+
+# def get_openai_api_key():
+#     """Get OpenAI API key from multiple sources"""
+#     try:
+#         return st.secrets["OPENAI_API_KEY"]
+#     except:
+#         pass
+#     return os.getenv('OPENAI_API_KEY')
 
 class QuestionGenerator:
     def __init__(self):
@@ -517,4 +531,5 @@ Generate the complete question paper now:
             total_words = sum(set_data['word_count'] for set_data in question_sets)
             st.info(f"📊 Total content generated: {total_words} words across all sets")
         
+
         return question_sets
